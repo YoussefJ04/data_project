@@ -110,28 +110,32 @@ def _create_barchart_maisons_apparts(df: pd.DataFrame, nom_region: str) -> go.Fi
     Returns:
         Figure Plotly.
     """
-    # Agrégation par département : prix moyen maisons et appartements
-    # On utilise une moyenne pondérée par nb de mutations pour chaque type.
-    dept_maisons = (
-        df[df["nb_maisons"] > 0]
-        .groupby("code_departement")
-        .apply(
-            lambda g: (g["prix_moyen"] * g["nb_maisons"]).sum() / g["nb_maisons"].sum(),
-            include_groups=False,
-        )
-        .reset_index(name="prix_moyen_maison")
-    )
-    dept_apparts = (
-        df[df["nb_appartements"] > 0]
-        .groupby("code_departement")
-        .apply(
-            lambda g: (g["prix_moyen"] * g["nb_appartements"]).sum() / g["nb_appartements"].sum(),
-            include_groups=False,
-        )
-        .reset_index(name="prix_moyen_appart")
+    # Agrégation par département : prix moyen pondéré pour maisons et appartements.
+    # On calcule numérateur (prix * nb) et dénominateur (nb) puis on divise pour
+    # obtenir une moyenne pondérée par département, sans dépendre du groupby.apply
+    # qui a un comportement instable selon la version de pandas.
+    df_calc = df.copy()
+    df_calc["prix_x_maisons"] = df_calc["prix_moyen"] * df_calc["nb_maisons"]
+    df_calc["prix_x_apparts"] = df_calc["prix_moyen"] * df_calc["nb_appartements"]
+
+    agg = df_calc.groupby("code_departement", as_index=False).agg(
+        prix_x_maisons_sum=("prix_x_maisons", "sum"),
+        nb_maisons_sum=("nb_maisons", "sum"),
+        prix_x_apparts_sum=("prix_x_apparts", "sum"),
+        nb_apparts_sum=("nb_appartements", "sum"),
     )
 
-    dept = dept_maisons.merge(dept_apparts, on="code_departement", how="outer").sort_values("code_departement")
+    # Calcul des moyennes pondérées (NaN si le département n'a aucun bien du type)
+    agg["prix_moyen_maison"] = agg["prix_x_maisons_sum"].where(
+        agg["nb_maisons_sum"] > 0
+    ) / agg["nb_maisons_sum"].where(agg["nb_maisons_sum"] > 0)
+    agg["prix_moyen_appart"] = agg["prix_x_apparts_sum"].where(
+        agg["nb_apparts_sum"] > 0
+    ) / agg["nb_apparts_sum"].where(agg["nb_apparts_sum"] > 0)
+
+    dept = agg[["code_departement", "prix_moyen_maison", "prix_moyen_appart"]].sort_values(
+        "code_departement"
+    )
 
     fig = go.Figure()
 

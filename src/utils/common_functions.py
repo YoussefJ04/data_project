@@ -17,8 +17,8 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-import config 
-from src.utils.constants import REGIONS
+import config  # noqa: E402
+from src.utils.constants import REGIONS  # noqa: E402
 
 
 @lru_cache(maxsize=1)
@@ -48,6 +48,11 @@ def load_data() -> pd.DataFrame:
             "code_region": str,
         },
     )
+    # Normalisation des codes : supprime le suffixe ".0" éventuel lié à la
+    # conversion implicite int → float par pandas quand la source contient
+    # des valeurs nulles. Sans ce nettoyage, le merge avec REGIONS échoue.
+    for col in ("code_region", "code_departement"):
+        df[col] = df[col].astype(str).str.replace(r"\.0$", "", regex=True)
     # Ajout du nom de région pour les affichages lisibles
     df["nom_region"] = df["code_region"].map(REGIONS).fillna("Autre")
     return df
