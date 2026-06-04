@@ -1,0 +1,21 @@
+[tool.ruff]
+# Configuration du linter ruff pour le projet.
+# Exécuter : python -m ruff check .
+
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+# Sélection des règles : style PEP8 (E, W), import (I), bugs Pyflakes (F),
+# bonnes pratiques (B), simplifications (SIM).
+select = ["E", "W", "F", "I", "B", "SIM", "UP"]
+
+# Règles explicitement ignorées :
+# - E501 : longueur de ligne (géré par line-length, parfois dépassé pour
+#   les chaînes de style inline Dash, difficile à casser proprement).
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# main.py contient un check de packages avant les imports lourds.
+# Les imports après le check sont volontairement marqués noqa: E402.
+"main.py" = []
