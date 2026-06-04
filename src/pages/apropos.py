@@ -6,6 +6,7 @@ et la méthodologie de traitement.
 """
 
 from dash import html
+
 from src.utils.constants import COLORS
 
 
@@ -32,7 +33,7 @@ def layout() -> html.Div:
             _section(
                 "Contexte",
                 "Ce dashboard a été réalisé dans le cadre du cours Python 2 — Manipulation de données "
-                "(E4-DSIA, ESIEE Paris, année 2024–2025). L'objectif est d'éclairer un sujet d'intérêt "
+                "(E4-FD, ESIEE Paris, année 2025-2026). L'objectif est d'éclairer un sujet d'intérêt "
                 "public à partir de données open data : ici, le marché immobilier résidentiel français "
                 "en 2024, à l'échelle de la commune.",
             ),

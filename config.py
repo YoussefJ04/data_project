@@ -8,7 +8,7 @@ duplication de chaînes "magiques" dans le code.
 
 from pathlib import Path
 
-# --- Chemins du projet -------------------------------------------------------
+# Chemins du projet
 # On utilise pathlib + résolution relative à ce fichier pour que les chemins
 # fonctionnent quel que soit le répertoire d'exécution.
 
@@ -24,7 +24,7 @@ RAW_DVF_FILE: Path = RAW_DATA_DIR / "indicateurs_dvf_communes_2024.csv"
 RAW_COMMUNES_GEO_FILE: Path = RAW_DATA_DIR / "communes_geo.csv"
 CLEANED_FILE: Path = CLEANED_DATA_DIR / "dvf_communes_geo_2024.csv"
 
-# --- URLs des sources de données --------------------------------------------
+# URLs des sources de données
 # Source principale : data.gouv.fr (licence ODbL)
 # Dataset "Indicateurs Immobiliers par commune et par année (2014-2024)"
 # Producteur : Boris Mericskay
@@ -42,11 +42,11 @@ COMMUNES_GEO_URL: str = (
     "&geometry=centre"
 )
 
-# --- Paramètres réseau ------------------------------------------------------
+# sParamètres réseau
 REQUEST_TIMEOUT_SECONDS: int = 60
-HTTP_USER_AGENT: str = "ESIEE-DSIA-DataProject/1.0 (academic use)"
+HTTP_USER_AGENT: str = "ESIEE-E4FD-DataProject/1.0 (academic use)"
 
-# --- Paramètres de nettoyage ------------------------------------------------
+# Paramètres de nettoyage
 # Bornes de filtrage (cohérentes avec la méthodologie du producteur de la base)
 PRIX_M2_MIN: int = 330       # €/m²
 PRIX_M2_MAX: int = 15_000    # €/m²
