@@ -5,6 +5,7 @@ Affiche les informations sur les sources de données et les auteurs.
 """
 
 from dash import html
+
 from src.utils.constants import COLORS
 
 
@@ -36,7 +37,7 @@ def create_footer() -> html.Div:
                 },
             ),
             html.Span(
-                "Projet Data ESIEE Paris — E4-DSIA · 2024–2025",
+                "Projet Data ESIEE Paris — E4-FD · 2025-2026",
                 style={
                     "color": COLORS["text_muted"],
                     "fontSize": "0.8rem",

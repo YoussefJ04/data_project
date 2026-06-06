@@ -6,6 +6,7 @@ les liens vers les différentes pages.
 """
 
 from dash import html
+
 from src.utils.constants import APP_TITLE, COLORS
 
 
