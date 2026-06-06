@@ -10,7 +10,7 @@ Ce script télécharge :
 Les fichiers récupérés sont stockés bruts (sans transformation) dans
 ``data/raw/`` conformément à la consigne du projet.
 
-Le script est idempotent : si les fichiers existent déjà, ils ne sont
+Si les fichiers existent déjà, ils ne sont
 pas re-téléchargés (sauf si ``force=True``).
 
 Exécution directe::
@@ -20,7 +20,6 @@ Exécution directe::
 
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 
@@ -50,8 +49,7 @@ def _download_file(url: str, destination: Path, *, force: bool = False) -> Path:
     Raises:
         requests.HTTPError: En cas de réponse HTTP non-2xx.
     """
-    # Idempotence : on évite le téléchargement si déjà présent localement,
-    # ce qui permet de relancer le pipeline sans connexion.
+    # On évite le téléchargement si déjà présent localement,
     if destination.exists() and not force:
         print(f"  [skip] {destination.name} déjà présent.")
         return destination
@@ -60,16 +58,37 @@ def _download_file(url: str, destination: Path, *, force: bool = False) -> Path:
 
     print(f"  [GET]  {url}")
     headers = {"User-Agent": config.HTTP_USER_AGENT}
-    response = requests.get(
-        url, headers=headers, timeout=config.REQUEST_TIMEOUT_SECONDS, stream=True
-    )
-    response.raise_for_status()
+    try:
+        response = requests.get(
+            url, headers=headers, timeout=config.REQUEST_TIMEOUT_SECONDS, stream=True
+        )
+        response.raise_for_status()
+    except requests.exceptions.ConnectionError as exc:
+        raise RuntimeError(
+            f"Impossible de joindre {url} : vérifiez votre connexion internet."
+        ) from exc
+    except requests.exceptions.Timeout as exc:
+        raise RuntimeError(
+            f"Délai dépassé en téléchargeant {url} "
+            f"(>{config.REQUEST_TIMEOUT_SECONDS}s)."
+        ) from exc
+    except requests.exceptions.HTTPError as exc:
+        raise RuntimeError(
+            f"Échec HTTP {response.status_code} lors du téléchargement de {url}."
+        ) from exc
 
     # Écriture en streaming pour ne pas saturer la RAM sur des gros fichiers.
-    with destination.open("wb") as fh:
-        for chunk in response.iter_content(chunk_size=8192):
-            if chunk:
-                fh.write(chunk)
+    # Si l'écriture échoue à mi-chemin, on supprime le fichier partiel
+    # pour ne pas laisser de données corrompues qui bloqueraient le pipeline.
+    try:
+        with destination.open("wb") as fh:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    fh.write(chunk)
+    except OSError:
+        if destination.exists():
+            destination.unlink()
+        raise
 
     size_kb = destination.stat().st_size / 1024
     print(f"  [ok]   {destination.name} ({size_kb:.1f} Ko)")
