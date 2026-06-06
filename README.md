@@ -1,4 +1,4 @@
-# Projet Data — Marché immobilier français 2024
+# Projet Data : Marché immobilier français 2024
 
 Dashboard interactif d'analyse du marché immobilier résidentiel français à l'échelle communale, basé sur les données DVF (Demandes de Valeurs Foncières) agrégées pour l'année 2024. Construit avec Python, Dash et Plotly.
 
@@ -176,8 +176,8 @@ Conformément à l'autorisation de l'enseignant, ce projet a été développé a
 2. *« Construire un dashboard Dash multi-pages avec une vue nationale, une analyse par région filtrable dynamiquement, et une page À propos. »*
 3. *« Déboguer les callbacks Dash qui ne s'affichent pas et corriger l'incohérence des codes région entre le CSV et le menu déroulant. »*
 4. *« Améliorer la qualité du code : configuration ruff, typage des fonctions, docstrings, gestion explicite des erreurs réseau. »*
+5. *Design du readme*
 
 
 Le choix du sujet, la structure du projet, la validation des résultats et la rédaction finale relèvent de notre responsabilité. Aucune ligne de code n'a été empruntée à une source tierce (forum, dépôt externe) sans être mentionnée ici.
 
-Toute ligne non déclarée ci-dessus est réputée être produite par les auteurs du projet.
