@@ -9,6 +9,7 @@ Affiche :
 
 from __future__ import annotations
 
+import plotly.graph_objects as go
 from dash import Input, Output, callback, dcc, html
 
 from src.components.charts import create_histogram, create_map
@@ -130,13 +131,14 @@ def _kpi_card(titre: str, valeur: str, sous_titre: str) -> html.Div:
     )
 
 
+# Callbacks
 
 @callback(
     Output("graph-histogramme-national", "figure"),
     Output("graph-carte-nationale", "figure"),
     Input("dropdown-region-nationale", "value"),
 )
-def update_graphs_national(code_region: str):
+def update_graphs_national(code_region: str) -> tuple[go.Figure, go.Figure]:
     """Met à jour l'histogramme et la carte selon la région sélectionnée.
 
     Args:

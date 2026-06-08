@@ -170,7 +170,7 @@ def _create_barchart_maisons_apparts(df: pd.DataFrame, nom_region: str) -> go.Fi
     return fig
 
 
-# --- Callbacks ---------------------------------------------------------------
+# Callbacks
 
 @callback(
     Output("kpis-region", "children"),
@@ -179,7 +179,9 @@ def _create_barchart_maisons_apparts(df: pd.DataFrame, nom_region: str) -> go.Fi
     Output("graph-carte-region", "figure"),
     Input("dropdown-region-page2", "value"),
 )
-def update_page_region(code_region: str):
+def update_page_region(
+    code_region: str,
+) -> tuple[html.Div | html.P, go.Figure, go.Figure, go.Figure]:
     """Met à jour tous les graphiques et KPIs pour la région sélectionnée.
 
     Args:
