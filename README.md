@@ -23,6 +23,10 @@ python main.py
 
 Puis ouvrir **http://127.0.0.1:8050** dans un navigateur web.
 
+### Vidéo de démonstration
+
+Une démonstration des fonctionnalités et interactions du dashboard est disponible ici : https://youtu.be/VGJpfsw4osk
+
 Au premier lancement, si les données ne sont pas présentes localement, le programme les télécharge automatiquement depuis les sources publiques (cf. section *Data*), les stocke dans `data/raw/`, puis génère le fichier nettoyé dans `data/cleaned/`. Les fichiers étant fournis dans le dépôt, le dashboard est utilisable immédiatement, y compris **sans connexion internet**.
 
 ### Utilisation
